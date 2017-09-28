@@ -1,0 +1,18 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+
+<div class="modal fade" id="modalMensagens" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<c:if test="${not empty msgErroObrigatorio}">
+			<div class="alert alert-warning">${msgErroObrigatorio}</div>
+		</c:if>
+	</div>
+	<div class="modal-dialog">
+		<c:if test="${not empty msgUsuario}">
+			<div class="alert alert-info">${msgUsuario}</div>
+		</c:if>
+	</div>
+</div>

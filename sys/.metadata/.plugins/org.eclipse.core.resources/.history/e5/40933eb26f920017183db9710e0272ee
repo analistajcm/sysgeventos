@@ -1,0 +1,26 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<c:import url="../basePag/cabecalhoUsuario.jsp"></c:import>
+	
+<c:set value="${noticia}" var="noticia"></c:set>
+	<div class="container">
+		<div>
+				<div>
+					<h1>${noticia.titulo}</h1>
+				</div>
+				<div><img src="${noticia.foto}"> </div>
+				<div>
+					<h3>${noticia.lead}</h3> 
+				</div>
+				<div>
+					<p>${notcia.noticia}</p>
+				</div>
+				<div >
+					<button type="button" class="btn" onclick="window.history.forward()'">Voltar</button>	
+					<input type="hidden" id="_csrf" name="_csrf" value="${_csrf.token}">
+				</div>
+		</div>
+	</div>	
+
+
+<c:import url="../basePag/rodape.jsp"></c:import>

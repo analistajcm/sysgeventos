@@ -1,0 +1,82 @@
+package br.com.rolebsb.modelo.entidades;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+
+@Entity
+public class Conteudo {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+	
+	private String url;
+	private String descricao;
+	
+	//Relacionamentos
+	
+	@ManyToOne
+	private Arquivo arquivos;
+	
+	
+	@OneToOne(mappedBy = "conteudo")
+	private Eventos evento;
+
+
+	public Long getId() {
+		return id;
+	}
+
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+
+	public String getUrl() {
+		return url;
+	}
+
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+
+	public String getDescricao() {
+		return descricao;
+	}
+
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
+
+	public Arquivo getArquivos() {
+		return arquivos;
+	}
+
+
+	public void setArquivos(Arquivo arquivos) {
+		this.arquivos = arquivos;
+	}
+
+
+	public Eventos getEvento() {
+		return evento;
+	}
+
+
+	public void setEvento(Eventos evento) {
+		this.evento = evento;
+	}
+
+	
+	
+}

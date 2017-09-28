@@ -1,0 +1,18 @@
+1501676886141	Move 'jquery-3.2.1.min.js' to 'js'
+1501682870148	Delete element
+1501695164108	Rename resource 'jquery-3.2.1.min.js'
+1501705218800	Move 'static' to 'WEB-INF'
+1501705626265	Move 'static' to 'webapp'
+1501707880509	Delete element
+1501707956766	Delete element
+1501712410480	Delete element
+1501761754442	Rename resource 'index.jsp'
+1501798008974	Copy file
+1501798029061	Copy file
+1501799215319	Move 'listaDeUsuarios.jsp' to 'organizacao'
+1501807712797	Rename resource 'index'
+1501809205215	Delete element
+1501851163390	Rename type 'ControllerIndex'
+1501852459512	Rename resource 'criarEvento.jsp'
+1501852564573	Delete element
+1501852581668	Rename resource 'eventos.jsp'

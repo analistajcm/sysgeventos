@@ -1,0 +1,13 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<div class="container">
+	<c:forEach items="${evento}" var="evento">
+		<div>
+			<p>${evento.nome}</p>
+			<p>${evento.dataInicio}</p>
+			<p>${evento.dataFim}</p>
+			<p>${evento.quantidadeVagas}</p>
+			<p>${evento.tipo}</p>
+		</div>
+	</c:forEach>
+</div>

@@ -1,0 +1,175 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RolêBSB - ORGANIZADOR</title>
+<meta name="description" content="RolêBSB - Sistema gerenciador de eventos">
+<meta name="keywords" content="Rolê, eventos, sistema de eventos, sistema gerenciados de eventosevento, curso, eventos, cursos, gestão de cursos, organização de eventos, gestão de eventos, cadastro de eventos, congressos, seminários, carreiras esportivas, cursos, semanas de cursos, corporativos, treinamentos">
+<meta name="robots" content="index, follow">
+<meta name="author" content="João Carlos de Sá Machado">
+
+<c:set var="path" value="${pageContext.request.contextPath}" scope="request" />
+
+<style type="text/css">
+@IMPORT url("${path}/static/css/normalize.css");
+@IMPORT url("${path}/static/bootstrap/css/bootstrap.min.css");
+@IMPORT url("${path}/static/bootstrap/css/bootstrap-theme.css");
+</style>
+
+<link href="https://fonts.googleapis.com/css?family=Chewy" rel="stylesheet">
+
+<style type="text/css">
+	.cabecalho{
+		width: 100%; float: left; background-color:#f4511e; padding: 3% 4%; 
+	}
+	.logo{
+		float: left; width: 157px; height: 56px; color: #fff; font-family: 'Chewy', cursive;
+	}
+	.botao-menu{
+		width: 50px; height: 50px; float: right; text-align: center; color: #fff; border: none; background: #f4511e;
+		margin: 1.1%;
+	}
+	.menu{
+		display:none;
+		width: 100%; height: 100%; position: fixed;
+		background-color: rgba(10,10,10,0.9); 
+		top: 0; left: 0;
+	}
+	.botao-close{
+		font-size: 3em; color:#fff; float: right; cursor: pointer; margin: 5px;
+	}
+	.menu ul{
+		width:  100%; float: left; text-align: center; list-style-type: none;
+	}
+	.menu li{
+		padding: 1.5%;
+	}
+	.menu li a{
+		font-size: 2em; color: #fff; padding: 1.5% 3%;
+	}	
+	.banner{
+		width: 100%; float: left; text-align: center;
+		background-color:#f4511e; padding: 3% 4%;
+	}
+	
+	.title{
+		width: 100%;
+	}
+	.title h2{
+		font-size: 2.5em; color: #fff;
+	}
+	.title h3{
+		font-size: 1.5em; color: #fff;
+	}
+	.botao-banner{
+		width: 100%;
+	}
+	.botao-cadastro{
+		width: 100%;
+		font-size: 1.5em;
+		border-radius: 10px;
+		background-color: #fff;
+		padding: 5%;
+	}
+	.botao{
+		width: 100%;
+		font-size: 1.5em;
+		border-radius: 10px;
+		background-color: #fff;
+		padding: 5%;
+		margin-bottom: 2%;
+	}
+	.corpo{
+		width: 100%;
+		margin: 2% 0 0 0;
+		padding: 2% 0 2% 0;
+		text-align: center; 
+	}
+	.cinza{
+	 background-color: #f6f6f6;
+	}
+	
+	.rodape{
+		background-color: #f4511e;	
+		width: 100%;
+		float: left;
+		padding: 3% 4%;
+		text-align: center;
+	}
+	.rodape p{
+		margin: auto;
+	}
+	
+	.evento{
+		width: 250px;
+		height: 150px;
+		float: left;
+		margin: 3% 10%;
+		text-align: center;
+		border-radius: 10px;
+		background-color: #f6f6f6;
+	}
+	
+	.centro{
+		width: 100%;
+		float: left;
+		margin: 2% 45%;
+		
+	}
+	
+	@media screen and (min-width: 640px){
+	.title h2{font-size: 3em;}
+	.title h3{font-size: 2em;}
+	.botao-cadastro{ width: 90%; padding: 4.5%;}
+	}
+	
+	@media screen and (min-width: 768px){
+	.title h2{font-size: 3em;}
+	.title h3{font-size: 2em;}
+	.logo{ font-size: 3em;}
+	.botao-cadastro{ width: 75%; font-size: 2em; padding: 4%;}
+	}
+	
+	@media screen and (min-width: 1024px){
+	.title h2{font-size: 3.5em;}
+	.title h3{font-size: 2.5em;}
+	.botao-cadastro{ width: 55%; font-size: 2em; padding: 3%;}
+	.botao-menu{display: none;}
+	.botao-close{display: none;}
+	.logo{ font-size: 4em;}
+	.menu {width: auto; height: 100px; line-height: 100px; float: right; display: block !important; position: static; background-color: #f4511e; }
+	.menu li {padding: 0; float: left;}
+	.menu li a{font-size: 1.6em; color: #fff; padding: 3px; margin: 2px;}
+	}
+	
+	@media screen and (min-width: 1680px){
+	.title h2{font-size: 3.5em;}
+	.title h3{font-size: 2.5em;}
+	.botao-cadastro{ width: 45%; font-size: 2em; padding: 2.5%;}
+	}
+	
+</style>
+</head>
+<body>
+	<header class="cabecalho">
+	<a href="home"><h1 class="logo">RolêBSB</h1></a>
+	<button class="botao-menu"> <span class="glyphicon glyphicon-menu-hamburger"></span></button>
+	<nav class="menu">
+		<a class="botao-close"><span class="glyphicon glyphicon-remove"></span></a>
+		<ul>
+			<li><a href="eventos">Eventos</a></li>
+			<li><a href="mensagem">Mensagem</a></li>
+			<li><a href="noticias">Notícias</a></li>
+			<li><a href="participantes">Participantes</a></li>
+			<li><a href="relatorios">Relatórios</a></li>
+			<li><a href="login">Logout</a></li>
+		</ul>
+	</nav>
+	</header>

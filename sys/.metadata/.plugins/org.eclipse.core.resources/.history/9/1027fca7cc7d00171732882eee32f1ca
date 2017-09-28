@@ -1,0 +1,68 @@
+ package br.com.rolebsb.controladores;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import br.com.rolebsb.modelo.entidades.Eventos;
+import br.com.rolebsb.modelo.entidades.Usuario;
+import br.com.rolebsb.modelo.repositorios.EventosRepositorio;
+import br.com.rolebsb.modelo.repositorios.UsuarioRepositorio;
+
+@Controller
+@RequestMapping("/organizador")
+public class ControlOrganizador {
+
+	@Autowired private UsuarioRepositorio usuarioRepositorio;
+	@Autowired private EventosRepositorio eventosRepositorio;
+	
+	
+	@RequestMapping("/mensagem")
+	public String mensagem() {
+		return "organizacao/mensagem";
+	}
+	
+	@RequestMapping("/noticias")
+	public String noticias() {
+		return "organizacao/noticias";
+	}
+	
+	@RequestMapping("/participantes")
+	public String participantes(Model model) {
+		
+		Iterable<Usuario> usuarios = usuarioRepositorio.findAll();
+		model.addAttribute("usuario", usuarios);
+		
+		return "organizacao/participantes";
+	}
+	
+	@RequestMapping("/relatorios")
+	public String relatorios() {
+		return "organizacao/relatorios";
+	}
+
+	@RequestMapping(method=RequestMethod.GET)
+	public String eventos(Model model){
+		Iterable<Eventos> eventos = eventosRepositorio.findAll();
+		model.addAttribute("evento", eventos);
+		return "organizacao/crudEventos";
+	}
+	
+	@RequestMapping(method=RequestMethod.POST)
+	public String salvar(@ModelAttribute Eventos evento, RedirectAttributes redirectAttributes){
+		
+		if(evento.getNome().isEmpty()){
+			redirectAttributes.addFlashAttribute("mensagemErro", "O campo nome está vazio");
+		}
+		else{
+			
+			eventosRepositorio.save(evento);
+			redirectAttributes.addFlashAttribute("mensagemInfo", "Evento registrado com sucesso");
+			return "redicet:/organizacao/crudEventos";
+		}
+	}
+}

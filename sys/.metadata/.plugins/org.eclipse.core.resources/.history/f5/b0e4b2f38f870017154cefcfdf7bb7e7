@@ -1,0 +1,27 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<div class="container">
+	
+	
+	
+	
+	<table class=" table table-houover table-condesed table-striped table-bordered">
+		
+			<c:forEach items="${evento}" var="evento">
+				<div class="evento">
+					<div class="modal-header">
+						${evento.nome}
+					</div>
+					<div>
+						Data de Inicio: ${evento.dataInicio}<br>
+						Data de Fim: ${evento.dataFim}<br>
+						Tipo: ${evento.tipo}
+					</div>
+					<div class="modal-footer">
+						Quantidade de vagas: ${evento.quantidadeVagas}
+					</div>
+				</div>	
+			</c:forEach>
+			
+	</table>
+</div>

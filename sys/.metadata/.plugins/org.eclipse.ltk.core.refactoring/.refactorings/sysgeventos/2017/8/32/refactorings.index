@@ -1,0 +1,21 @@
+1502206095843	Rename resource 'faq.jsp'
+1502213119466	Move 'logorolebsb.png' to 'img'
+1502213121426	Move 'pontejk.jpg' to 'img'
+1502303144114	Copy package
+1502303151722	Delete element
+1502303609095	Delete element
+1502304910635	Rename package 'br.com.rolebsb.dao.copy'
+1502377282033	Rename resource 'crudEventos.jsp'
+1502377292325	Rename resource 'Eventos.jsp'
+1502378510913	Move 'formEvento.jsp' to 'form'
+1502378513903	Move 'formNoticia.jsp' to 'form'
+1502378523645	Move 'listaDeEventos.jsp' to 'lista'
+1502378525414	Move 'listaDeUsuarios.jsp' to 'lista'
+1502385893424	Move 'listaEventos.jsp' to 'lista'
+1502385897273	Move 'inserirUsuario.jsp' to 'form'
+1502385921323	Rename resource 'inserirUsuario.jsp'
+1502389276988	Rename resource 'cadastro.jsp'
+1502391090135	Rename resource 'cadastro.jsp'
+1502391108622	Copy file
+1502391464352	Move 'cadastroOrganizador.jsp' to 'pag'
+1502391467192	Move 'cadastroUsuario.jsp' to 'pag'

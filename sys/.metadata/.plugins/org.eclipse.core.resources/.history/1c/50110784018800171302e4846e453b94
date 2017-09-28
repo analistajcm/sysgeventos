@@ -1,0 +1,23 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<c:import url="../basePag/cabecalhoOrganizador.jsp"></c:import>
+	<div class="container">
+		<div class="modal-header">
+			<h2>Mensagem:</h2>
+		</div>
+		<div class="modal-body">
+		<label class="control-label">Evento:</label>
+			<select>
+				<c:forEach items="${evento}" var="evento">
+					<option></option>
+				</c:forEach>
+			</select>
+		<label class="control-label">Mensagem</label>
+			<textarea rows="10" cols="20" class="form-control"></textarea>
+		</div>
+		<div class="modal-footer">
+			<button>Enviar</button>
+		</div>
+	</div>
+<c:import url="../basePag/rodape.jsp"></c:import>
+

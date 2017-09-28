@@ -1,0 +1,10 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<c:import url="../basePag/cabecalhoOrganizador.jsp"></c:import>
+	<div>
+		<label>Evento: </label>
+		<label>Mensagem</label>
+			<button>Enviar</button>
+	</div>
+<c:import url="../basePag/rodape.jsp"></c:import>
+

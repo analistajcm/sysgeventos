@@ -1,0 +1,85 @@
+package br.com.rolebsb.controladores;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import br.com.rolebsb.modelo.entidades.Eventos;
+import br.com.rolebsb.modelo.entidades.Usuario;
+import br.com.rolebsb.modelo.repositorios.EventosRepositorio;
+import br.com.rolebsb.modelo.repositorios.UsuarioRepositorio;
+
+@Controller
+@RequestMapping("/rolebsb")
+public class ControlIndex {
+
+	@Autowired private EventosRepositorio eventosRepositorio;
+	@Autowired private UsuarioRepositorio usuarioRepositorio;
+	
+	
+	@RequestMapping("/home")
+	public String index(Model model){
+		Iterable<Eventos> eventos = eventosRepositorio.findAll();
+		model.addAttribute("evento", eventos);
+		return "index";	
+	}
+	
+	@RequestMapping("/organizador")
+	public String cadastroOrganizador(){
+		return "pag/cadastroOrganizador";	
+	}
+	
+	@RequestMapping("/usuario")
+	public String cadastroUsuario(){
+		return "pag/cadastroUsuario";	
+	}
+	
+	@RequestMapping("/sobre")
+	public String sobre(){
+		return "pag/sobre";	
+	}
+	
+	@RequestMapping("/noticias")
+	public String noticias(Model model){
+		Iterable<Eventos> eventos = eventosRepositorio.findAll();
+		model.addAttribute("noticia", eventos);
+		return "pag/noticias";	
+	}
+	
+	@RequestMapping("/cadastro")
+	public String cadastro(){
+		return "pag/cadastroUsuario";	
+	}
+	
+	@RequestMapping("/login")
+	public String login(){
+		return "login";
+	}
+	
+	@RequestMapping(value = "cadastro", method=RequestMethod.POST)
+	public String postar(@Valid @ModelAttribute Usuario usuario, BindingResult bindingResult, RedirectAttributes redirectAttributes){
+
+		if (bindingResult.hasErrors()) {
+			String a = "msgErroObrigatorio";
+			redirectAttributes.addFlashAttribute(a, "Campo(s) obrigatório(s) não informado!" );
+			System.out.println(a);
+		}
+
+		usuarioRepositorio.save(usuario);
+		redirectAttributes.addFlashAttribute("msgUsuario", "Usuário cadastro. Seja bem vindo ao RolêBSB!");
+		
+		if (usuario.getOrganizador().equals(true)){
+			return "direct:../organizador/eventos";
+		}
+		
+		return "redirect:../usuario/eventos";
+	}
+	
+}

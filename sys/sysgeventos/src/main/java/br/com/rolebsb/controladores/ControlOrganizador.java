@@ -1,0 +1,458 @@
+ package br.com.rolebsb.controladores;
+
+
+import java.awt.image.RenderedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.imageio.ImageIO;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.DefaultPieDataset;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import br.com.rolebsb.configuracao.ConfigEmail;
+import br.com.rolebsb.modelo.entidades.AdmUsuarios;
+import br.com.rolebsb.modelo.entidades.Arquivo;
+import br.com.rolebsb.modelo.entidades.Eventos;
+import br.com.rolebsb.modelo.entidades.Noticia;
+import br.com.rolebsb.modelo.entidades.Usuario;
+import br.com.rolebsb.modelo.repositorios.AdmUsuariosRepositorio;
+import br.com.rolebsb.modelo.repositorios.ArquivoRepositorio;
+import br.com.rolebsb.modelo.repositorios.EventosRepositorio;
+import br.com.rolebsb.modelo.repositorios.NoticiasRepositorio;
+import br.com.rolebsb.modelo.repositorios.UsuarioRepositorio;
+import br.com.rolebsb.servico.UploadForm;
+import sun.security.krb5.internal.crypto.CksumType;
+
+@Controller
+@RequestMapping("/organizador")
+public class ControlOrganizador {
+
+	@Autowired private UsuarioRepositorio usuarioRepositorio;
+	@Autowired private EventosRepositorio eventosRepositorio;
+	@Autowired private NoticiasRepositorio noticiaRepositorio;
+	@Autowired private AdmUsuariosRepositorio admUsuariosRepositorio;
+	@Autowired private ArquivoRepositorio arquivoRepositorio;
+
+	private Long id;
+
+	//====== EVENTOS =======
+	
+	@RequestMapping(value="/eventos")
+	public String eventos(HttpServletRequest request ,Model model) {
+		Iterable<Eventos> eventos = listarEventosParticipante(request.getRemoteUser());
+		model.addAttribute("evento", eventos);
+		
+		return "organizacao/eventos";
+	}
+	
+
+	@RequestMapping(value="/eventos/editar{idEvento}", method=RequestMethod.GET)
+	public String alterarEvento(@PathVariable Long idEvento, Model model) {
+		Eventos evento = eventosRepositorio.findOne(idEvento);
+		model.addAttribute("evento", evento);
+		
+		return "organizacao/alterarEvento";
+	}
+	
+	@RequestMapping(value="/eventos/alterar", method=RequestMethod.POST)
+	public String salvarAlteracaoEvento(HttpServletRequest request, AdmUsuarios admusuario, @ModelAttribute Eventos evento) {	
+
+		eventosRepositorio.save(evento);
+		
+		return "redirect:../eventos?alteracao=true";
+	}
+	
+	
+	@RequestMapping(value="/eventos/deletar{idEvento}")
+	public String removeEvento(@PathVariable Long idEvento, Eventos evento) {
+		
+		Iterable<AdmUsuarios> admUsuarios = admUsuariosRepositorio.findAll();
+		for(AdmUsuarios admUsuario : admUsuarios){
+			if(admUsuario.getEvento().getId() == evento.getId(idEvento)){
+				admUsuariosRepositorio.delete(admUsuario);
+			}
+		}
+		
+		eventosRepositorio.delete(idEvento);
+		
+		return "redirect:../eventos?excluso=true";
+		
+	}
+	
+	@RequestMapping(value = "evento", method=RequestMethod.POST)
+	public String salvar(HttpServletRequest request, AdmUsuarios admusuario, @ModelAttribute Eventos evento, BindingResult result){
+		
+		if(result.hasErrors()){
+			return "redirect:eventos";
+		}
+		
+		Usuario usuario = usuarioRepositorio.findOneByEmail(request.getRemoteUser());
+		eventosRepositorio.save(evento);
+		admusuario.setEvento(evento);
+		admusuario.setUsario(usuario);
+		admusuario.setOrganizador(true);
+		admUsuariosRepositorio.save(admusuario);
+		
+		return "redirect:../organizador/eventos?sucesso=true";
+	}
+	
+	@RequestMapping(value="/eventos/adicionar{idEvento}", method=RequestMethod.GET)
+	public String adcionarPag() {
+
+		return "organizacao/adicionaArquivo";
+	}
+	
+	private static String UPLOADED_FOLDER = "F://temp//";
+	
+	@RequestMapping(value = "adicionarArquivo", method=RequestMethod.POST)
+	public String adicionarArquivo(@ModelAttribute UploadForm form){
+		
+		for (MultipartFile file : form.getFiles()) {
+
+            if (file.isEmpty()) {
+                continue; 
+            }
+
+            try {
+
+                byte[] bytes = file.getBytes();
+                Path path = Paths.get(UPLOADED_FOLDER + file.getOriginalFilename());
+                Files.write(path, bytes);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+             return "redirect:../organizador/eventos?arquivosucesso=true";
+       
+	}
+	
+	//========= MENSAGEM ===========
+	
+	@RequestMapping("/mensagem")
+	public String mensagem(HttpServletRequest request, Model model) {
+		Iterable<Eventos> eventos = listarEventosParticipante(request.getRemoteUser());
+		model.addAttribute("evento", eventos);
+		
+		return "organizacao/mensagem";
+	}
+	
+	@RequestMapping(value="/mensagem", method=RequestMethod.POST)
+	public String enviar(HttpServletRequest request) {
+		Iterable<AdmUsuarios> admUsuarios = admUsuariosRepositorio.findAllByEvento(eventosRepositorio.findOne(Long.parseLong(request.getParameter("evento"))));
+		ArrayList<String> email = new ArrayList<String>();
+		
+		for(AdmUsuarios admUsuario : admUsuarios){
+			email.add(admUsuario.getUsario().getEmail());				
+		}
+		
+		ConfigEmail mensagem = new ConfigEmail();
+		mensagem.sendEmail(email, request.getParameter("subject"), request.getParameter("mensagem"));
+		
+		return "redirect:app/organizador/mensagem";
+	}
+	
+	//========== NOTICIAS =============
+	
+	
+	@RequestMapping("/noticias")
+	public String noticias(HttpServletRequest request, Model model) {
+		Iterable<Eventos> eventos = listarEventosParticipante(request.getRemoteUser());;
+		model.addAttribute("evento", eventos);
+		//=====================================================
+		Iterable<Noticia> noticias = noticiaRepositorio.findAll();
+		Iterable<Eventos> sEventos = eventosRepositorio.findAll();
+		ArrayList<Noticia> sNoticia = new ArrayList<Noticia>(); 
+			for(Noticia noticia : noticias){
+				for(Eventos sEvento : sEventos){
+					if(sEvento == noticia.getEvento()){
+						sNoticia.add(noticia);
+					}			
+				}	
+			}
+		Iterable<Noticia> noticiaV = sNoticia;	
+		model.addAttribute("noticia", noticiaV);
+		
+		return "organizacao/noticias";
+	}
+	
+	@RequestMapping(value = "noticia", method=RequestMethod.POST)
+	public String postar(@ModelAttribute Noticia noticia){
+		/*
+		Iterable<Eventos> eventos = eventosRepositorio.findAll();
+		Set<Noticia> noticias = new HashSet<Noticia>();
+			for(Eventos evento: eventos){
+				if(evento.getId() == noticia.getEvento().getId()){
+					noticias.add(noticia);
+					evento.setNoticias(noticias);
+					eventosRepositorio.save(evento);
+				}
+			}
+		
+		*/
+		noticiaRepositorio.save(noticia);
+		
+		return "redirect:../organizador/noticias?sucesso=true";
+	}
+	
+	@RequestMapping(value="noticias/deletar{idNoticia}")
+	public String deletar(@PathVariable Long idNoticia){
+		
+		noticiaRepositorio.delete(idNoticia);
+		
+		return "redirect:../noticias";
+	}
+	
+	
+	//========= PARTICIPANTES ==============
+	@RequestMapping(value="/participantes")
+	public String participantes(Model model, HttpServletRequest request) {
+		Iterable<Eventos> eventos = listarEventosParticipante(request.getRemoteUser());
+		model.addAttribute("evento", eventos);	
+		
+		return "organizacao/participantes";
+	}
+	
+	@RequestMapping(value="/participantes/evento", method=RequestMethod.GET)
+	public String  listarParticipantesGet(HttpServletRequest request, Model model){
+		Eventos evento = eventosRepositorio.findOne(id);
+		Iterable<AdmUsuarios> admUsuarios = admUsuariosRepositorio.findAllByEvento(evento);
+		ArrayList<Usuario> selectUsuario =  new ArrayList<Usuario>();
+		ArrayList<Usuario> usuario =  new ArrayList<Usuario>();
+		
+		for(AdmUsuarios admUsuario : admUsuarios){
+			selectUsuario.add(admUsuario.getUsario());
+		}
+		
+		
+		for(Usuario user: selectUsuario){
+			if(user.getOrganizador() == false){
+				usuario.add(user);
+			}
+		}
+		Iterable<Usuario> usuarios = usuario;
+		
+		model.addAttribute("usuario", usuarios);
+		model.addAttribute("evento", evento);
+			
+		return "organizacao/listaDeParticipantes";
+	}
+	
+	@RequestMapping(value="/participantes/evento", method=RequestMethod.POST)
+	public String  listarParticipantes(HttpServletRequest request, Model model){
+		id = Long.parseLong(request.getParameter("idEvento"));
+		Eventos evento = eventosRepositorio.findOne(id);
+		Iterable<AdmUsuarios> admUsuarios = admUsuariosRepositorio.findAllByEvento(evento);
+		ArrayList<Usuario> selectUsuario =  new ArrayList<Usuario>();
+		ArrayList<Usuario> usuario =  new ArrayList<Usuario>();
+		
+		for(AdmUsuarios admUsuario : admUsuarios){
+			selectUsuario.add(admUsuario.getUsario());
+		}
+		
+		
+		for(Usuario user: selectUsuario){
+			if(user.getOrganizador() == false){
+				usuario.add(user);
+			}
+		}
+		Iterable<Usuario> usuarios = usuario;
+		
+		model.addAttribute("usuario", usuarios);
+		model.addAttribute("evento", evento);
+			
+		return "organizacao/listaDeParticipantes";
+	}
+	
+	
+	@RequestMapping(value="/participantes/presenca", method=RequestMethod.POST)
+	public String salvarPresenca(HttpServletRequest request, Model model){
+		
+		Long idEvento = Long.parseLong(request.getParameter("idEvento"));
+		Long idUsuario = Long.parseLong(request.getParameter("idUsuario"));
+		
+		Eventos evento = eventosRepositorio.findOne(idEvento);
+		Iterable<AdmUsuarios> admUsuarios = admUsuariosRepositorio.findAllByEvento(evento);
+		
+		for(AdmUsuarios admUsuario : admUsuarios){
+			if(admUsuario.getUsario().getId() == idUsuario){
+				admUsuario.setId(admUsuario.getId());
+				admUsuario.setPresenca(true);
+				admUsuariosRepositorio.save(admUsuario);
+			}
+		}
+		
+		model.addAttribute("evento", evento);
+		return "redirect:evento?salvoPresenca=true";
+	}
+	
+	@RequestMapping(value="/participantes/ausente", method=RequestMethod.POST)
+	public String salvarAusencia(HttpServletRequest request, Model model){
+		
+		Long idEvento = Long.parseLong(request.getParameter("idEvento"));
+		Long idUsuario = Long.parseLong(request.getParameter("idUsuario"));
+		
+		Eventos evento = eventosRepositorio.findOne(idEvento);
+		Iterable<AdmUsuarios> admUsuarios = admUsuariosRepositorio.findAllByEvento(evento);
+		
+		for(AdmUsuarios admUsuario : admUsuarios){
+			if(admUsuario.getUsario().getId() == idUsuario){
+				admUsuario.setId(admUsuario.getId());
+				admUsuario.setPresenca(false);
+				admUsuariosRepositorio.save(admUsuario);
+			}
+		}
+		model.addAttribute("evento", evento);
+		return "redirect:evento?salvoPresenca=true";
+	}
+	
+	@RequestMapping(value="/participantes/listaPresenca{idEvento}", method=RequestMethod.GET)
+	public String listaPresenca(@PathVariable Long idEvento, Model model) {
+		Eventos evento = eventosRepositorio.findOne(idEvento);
+		Iterable<AdmUsuarios> admUsuarios = admUsuariosRepositorio.findAllByEvento(evento);
+		ArrayList<Usuario> selectUsuario =  new ArrayList<Usuario>();
+		ArrayList<Usuario> usuario =  new ArrayList<Usuario>();
+		
+		
+		for(AdmUsuarios admUsuario : admUsuarios){
+			selectUsuario.add(admUsuario.getUsario());
+		}
+		
+		
+		for(Usuario user: selectUsuario){
+			if(user.getOrganizador() == false){
+				usuario.add(user);
+			}
+		}
+		Iterable<Usuario> usuarios = usuario;
+		
+		model.addAttribute("usuario", usuarios);
+		
+		return "organizacao/listaPresenca";
+		
+	}
+	
+	@RequestMapping(value="/participantes/crachas{idEvento}", method=RequestMethod.GET)
+	public String crachas(@PathVariable Long idEvento, Model model) {
+		Eventos evento = eventosRepositorio.findOne(idEvento);
+		Iterable<AdmUsuarios> admUsuarios = admUsuariosRepositorio.findAllByEvento(evento);
+		ArrayList<Usuario> selectUsuario =  new ArrayList<Usuario>();
+		ArrayList<Usuario> usuario =  new ArrayList<Usuario>();
+		
+		
+		for(AdmUsuarios admUsuario : admUsuarios){
+			selectUsuario.add(admUsuario.getUsario());
+		}
+		
+		
+		for(Usuario user: selectUsuario){
+			if(user.getOrganizador() == false){
+				usuario.add(user);
+			}
+		}
+		Iterable<Usuario> usuarios = usuario;
+		
+		model.addAttribute("usuario", usuarios);
+		model.addAttribute("evento", evento);
+		
+		return "organizacao/crachas";
+		
+	}
+	
+	@RequestMapping(value="/participantes/certificado", method=RequestMethod.GET)
+	public String certificado() {
+		
+		return "organizacao/certificadoPalestrante";
+		
+	}
+	
+	
+	//========= RELATORIOS ==============
+	@RequestMapping("/relatorios")
+	public String relatorios(Model model, HttpServletRequest request) {
+		Iterable<Eventos> eventos = listarEventosParticipante(request.getRemoteUser());
+		model.addAttribute("evento", eventos);
+		
+		return "organizacao/relatorios";
+	}
+	
+	@RequestMapping(value="/relatorios", method=RequestMethod.POST)
+	public String obterRelatorio(HttpServletRequest request, HttpServletResponse response ,Model model) throws ServletException, IOException{
+		Eventos evento = eventosRepositorio.findOne(Long.parseLong(request.getParameter("evento.id")));
+		Iterable<AdmUsuarios> admUsuarios = admUsuariosRepositorio.findAllByEvento(evento);
+		ArrayList<Usuario> selectUsuario =  new ArrayList<Usuario>();
+		ArrayList<Usuario> usuario =  new ArrayList<Usuario>();
+		Integer masculino = 0;
+		Integer feminino = 0;
+		
+		for(AdmUsuarios admUsuario : admUsuarios){
+			selectUsuario.add(admUsuario.getUsario());
+		}
+		
+		
+		for(Usuario user: selectUsuario){
+			if(user.getOrganizador() == false){
+				usuario.add(user);
+				if(user.getSexo() == true){
+					masculino++;
+				}else{
+					feminino++;
+				}
+			}
+		}
+		
+		Iterable<Usuario> usuarios = usuario;
+		
+		model.addAttribute("m", masculino);
+		model.addAttribute("f", feminino);
+		model.addAttribute("usuario", usuarios);
+		
+		return "organizacao/graficos";
+	}
+ 
+	
+	//================ SERVIÇOS =========================
+	public ArrayList<Eventos> listarEventosParticipante(String string){
+		Usuario usuario = usuarioRepositorio.findOneByEmail(string);
+		Iterable<AdmUsuarios> admUsuarios = admUsuariosRepositorio.findAll();
+		ArrayList<Eventos> evento = new ArrayList<Eventos>();
+		for(AdmUsuarios admUsuario : admUsuarios){
+			if (usuario.getId() == admUsuario.getUsario().getId()){
+				evento.add(admUsuario.getEvento());
+			}
+			
+		}
+		return evento;
+		
+	}
+		
+	
+	
+}

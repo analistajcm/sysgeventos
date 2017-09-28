@@ -1,0 +1,81 @@
+package br.com.rolebsb.servico;
+
+import java.awt.image.RenderedImage;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.DefaultPieDataset;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import br.com.rolebsb.modelo.entidades.AdmUsuarios;
+import br.com.rolebsb.modelo.entidades.Eventos;
+import br.com.rolebsb.modelo.entidades.Usuario;
+import br.com.rolebsb.modelo.repositorios.AdmUsuariosRepositorio;
+import br.com.rolebsb.modelo.repositorios.EventosRepositorio;
+
+public class JFreeChartServlet extends HttpServlet{
+
+	
+	@Autowired private EventosRepositorio eventosRepositorio;
+	@Autowired private AdmUsuariosRepositorio admUsuariosRepositorio;
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public JFreeChartServlet(){
+		 super();
+	}
+	
+	protected void graficoGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Eventos evento = eventosRepositorio.findOne(Long.parseLong(request.getParameter("evento.id")));
+		Iterable<AdmUsuarios> admUsuarios = admUsuariosRepositorio.findAllByEvento(evento);
+		ArrayList<Usuario> selectUsuario =  new ArrayList<Usuario>();
+		ArrayList<Usuario> usuario =  new ArrayList<Usuario>();
+		Integer masculino = 0;
+		Integer feminino = 0;
+		
+		for(AdmUsuarios admUsuario : admUsuarios){
+			selectUsuario.add(admUsuario.getUsario());
+		}
+		
+		
+		for(Usuario user: selectUsuario){
+			if(user.getOrganizador() == false){
+				usuario.add(user);
+			}
+			if(user.getSexo() == true){
+				masculino++;
+			}else{
+				feminino++;
+			}
+		}
+		
+		
+		
+		response.setContentType("image/png");
+	
+        ServletOutputStream os = response.getOutputStream();
+		
+        DefaultPieDataset dados = new DefaultPieDataset();
+		dados.setValue("Masculino", masculino);
+		dados.setValue("Feminino", feminino);
+		
+		JFreeChart chart = ChartFactory.createPieChart("Grafico de sexo", dados, true, true, true);
+		RenderedImage chartImage = chart.createBufferedImage(200, 200);
+		ImageIO.write(chartImage, "png", os);
+		
+	}
+	
+	
+}

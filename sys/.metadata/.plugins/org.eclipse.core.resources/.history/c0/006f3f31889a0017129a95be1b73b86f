@@ -1,0 +1,6 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<c:import url="../basePag/cabecalhoOrganizador.jsp"></c:import>
+
+
+<c:import url="../basePag/rodape.jsp"></c:import>

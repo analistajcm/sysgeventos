@@ -1,0 +1,37 @@
+package br.com.rolebsb.controladores;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+
+import br.com.rolebsb.modelo.entidades.Usuario;
+import br.com.rolebsb.modelo.repositorios.UsuarioRepositorio;
+
+@Controller
+@RequestMapping("/usuario")
+public class ControlUsuario {
+
+	@Autowired private UsuarioRepositorio usuarioRepositorio;
+	
+	@RequestMapping(method=RequestMethod.GET)
+	public String listarUsuarios(Model model){
+		
+		Iterable<Usuario> usuarios = usuarioRepositorio.findAll();
+		model.addAttribute("titulo", "Lista de Usuarios");
+		model.addAttribute("usuario", usuarios);
+		
+		return "usuario/listaDeUsuarios";
+	
+	}
+	
+	/*
+	@RequestMapping(method=RequestMethod.POST)
+	public String inserirUsuario(){
+		
+		return "usuario/listaDeUsuarios";
+	}
+	*/
+}

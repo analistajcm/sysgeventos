@@ -1,0 +1,15 @@
+ 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+
+<div class="container">
+	<c:forEach items="${comentarios}" var="comentarios">
+		<div class="comentario">
+		<p>
+		${comentarios.usuario}<br>
+		${comentarios.textoComentario}<br>
+		${comentarios.dataComentario}
+		</p>
+		</div>
+	</c:forEach>
+</div>

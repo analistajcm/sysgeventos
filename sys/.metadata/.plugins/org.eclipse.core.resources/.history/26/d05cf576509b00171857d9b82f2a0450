@@ -1,0 +1,205 @@
+	.cabecalho{
+	width: 100%;float: left; background-color:#f4511e; padding: 3% 4%; position: static;
+	}
+	.logo{
+		float: left; width: 157px; height: 56px; color: #fff; font-family: 'Chewy', cursive;
+	}
+	.botao-menu{
+		width: 50px; height: 50px; float: right; text-align: center; color: #fff; border: none; background: #f4511e;
+		margin: 1.1%;
+	}
+	.menu{
+		display:none;
+		width: 100%; height: 100%; position: fixed;
+		background-color: rgba(10,10,10,0.9); 
+		top: 0; left: 0;
+	}
+	.botao-close{
+		font-size: 3em; color:#fff; float: right; cursor: pointer; margin: 5px;
+	}
+	.menu ul{
+		width:  100%; float: left; text-align: center; list-style-type: none;
+	}
+	.menu li{
+		padding: 0.5%;
+	}
+	.menu li a{
+		font-size: 2em; color: #fff; padding: 1% 2%;
+	}
+	
+	.menu ul li button{
+	background-color:  rgba(10,10,10,0);
+	text-align: center;
+	border: none;
+	color: #fff; 
+	width: 125px;
+	}	
+	
+	.banner{
+		width: 100%; float: left; text-align: center;
+		background-color:#f4511e; padding: 3% 4%;
+	}
+	
+	.title{
+		width: 100%;
+	}
+	.title h2{
+		font-size: 2.5em; color: #fff;
+	}
+	.title h3{
+		font-size: 1.5em; color: #fff;
+	}
+	.botao-banner{
+		width: 100%;
+	}
+	.botao-cadastro{
+		width: 100%;
+		font-size: 1.5em;
+		border-radius: 10px;
+		background-color: #fff;
+		padding: 5%;
+	}
+	.botao{
+		width: 100%;
+		font-size: 1.5em;
+		border-radius: 10px;
+		background-color: #fff;
+		padding: 5%;
+		margin-bottom: 2%;
+	}
+	.corpo{
+		width: 100%;
+		float: left;
+		margin: 2% 0 0 0;
+		padding: 2% 0 2% 0;
+		text-align: center; 
+	}
+	.cinza{
+	 background-color: #f6f6f6;
+	}
+	
+	.rodape{
+		background-color: #f4511e;	
+		width: 100%;
+		float: left;
+		padding: 3% 4%;
+		text-align: center;
+	}
+	.rodape p{
+		margin: auto;
+	}
+	
+	.evento{
+		width: 250px;
+		height: 180px;
+		float: left;
+		margin: 4% 4%;
+		text-align: center;
+		border-radius: 10px;
+		background-color: #f6f6f6;
+	}
+	
+	.eventoOrganizador{
+		width: 250px;
+		height: 240px;
+		float: left;
+		margin: 4% 4%;
+		text-align: center;
+		border-radius: 10px;
+		background-color: #f6f6f6;
+	}
+	
+	.eventoNoticia{
+		width: 250px;
+		height: 120px;
+		float: left;
+		margin: 4% 4%;
+		text-align: center;
+		border-radius: 10px;
+		background-color: #f6f6f6;
+	}
+	
+	.eventoOrganizador button{
+		margin-top: 2px;
+	}
+	
+	.crachas{
+		width: 250px;
+		height: 240px;
+		float: left;
+		margin: 4% 4%;
+		text-align: center;
+		background-color: #f4511e;
+	}
+	
+	.crachas h3{
+		margin-bottom: 25%; 
+	}
+	
+	.container-form{
+	float: left;
+	width: 60%;
+	margin: 0 20%;
+	}
+	
+	.centro{
+		width: 100%;
+		float: left;
+		margin: 2% 40%;
+	}
+	
+	.container-evento{
+		float: left;
+		margin: 5% 15% 5% 7.5%;
+	}
+	
+	.comentario{
+		margin: 2% 2%;
+		border-radius: 10px;
+		background-color: #f6f6f6;
+	}
+	
+	@media print {
+	.centro button{display: none;}
+	.crachas{width: 250px; height: 240px; float: left; margin: 4% 4%; text-align: center; background-color: #f4511e;}
+	}
+
+	@media screen and (min-width: 640px){
+	.title h2{font-size: 3em;}
+	.title h3{font-size: 2em;}
+	.botao-cadastro{ width: 90%; padding: 4.5%;}
+	.centro{margin: 2% 45%;}
+	.container-evento{float: left;margin: 5% 35%;}
+	.container-evento h1{ text-align: center;	font-size: 3em;}
+	.container-evento p{font-size: 1.5em;}
+	}
+	
+	@media screen and (min-width: 768px){
+	.title h2{font-size: 3em;}
+	.title h3{font-size: 2em;}
+	.logo{ font-size: 3em;}
+	.evento{margin: 4% 0 4% 10%}
+	.eventoOrganizador{margin: 4% 0 4% 10%}
+	.eventoNoticia{margin: 4% 0 4% 10%}
+	.botao-cadastro{ width: 75%; font-size: 2em; padding: 4%;}
+	}
+	
+	@media screen and (min-width: 1024px){
+	.title h2{font-size: 3.5em;}
+	.title h3{font-size: 2.5em;}
+	.botao-cadastro{ width: 55%; font-size: 2em; padding: 3%;}
+	.botao-menu{display: none;}
+	.botao-close{display: none;}
+	.logo{ font-size: 4em;}
+	.menu {width: auto; height: 100px; line-height: 100px; float: right; display: block !important; position: static; background-color: #f4511e;}
+	.menu li {padding: 0; float: left;}
+	.menu li a{font-size: 1.6em; color: #fff; padding: 0; margin: 0;}
+	.menu li button{width: auto; padding: 0; margin: 0;} 
+	}
+	
+	@media screen and (min-width: 1680px){
+	.title h2{font-size: 3.5em;}
+	.title h3{font-size: 2.5em;}
+	.botao-cadastro{ width: 45%; font-size: 2em; padding: 2.5%;}
+	.centro{margin: 2% 0 3% 20%; padding-left: 20%;}
+	}

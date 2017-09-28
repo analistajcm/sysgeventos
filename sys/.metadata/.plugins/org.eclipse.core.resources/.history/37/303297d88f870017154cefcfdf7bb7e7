@@ -1,0 +1,13 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<c:import url="../basePag/cabecalhoOrganizador.jsp"></c:import>
+<div class="menu-organizador">
+	<div class="centro">
+		<botton type="button" class="botao-cadastro" data-toggle="modal" data-target="#formEvento" >Adicionar</botton>
+		<botton type="button" class="btn">Alterar</botton>
+		<botton type="button" class="btn">Remover</botton>
+	</div>	
+</div>
+<c:import url="./lista/listaDeEventos.jsp"></c:import>
+<c:import url="./form/formEvento.jsp"></c:import>
+<c:import url="../basePag/rodape.jsp"></c:import>

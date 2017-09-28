@@ -1,0 +1,50 @@
+package br.com.rolebsb.controladores;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import br.com.rolebsb.modelo.entidades.Eventos;
+import br.com.rolebsb.modelo.repositorios.EventosRepositorio;
+
+@Controller
+@RequestMapping("/rolebsb")
+public class ControlIndex {
+
+	@Autowired private EventosRepositorio eventosRepositorio;
+	
+	Iterable<Eventos> eventos = eventosRepositorio.findAll();
+	
+	@RequestMapping("/home")
+	public String index(Model model){
+		model.addAttribute("evento", eventos);
+		return "index";	
+	}
+	
+	@RequestMapping("/organizador")
+	public String cadastroOrganizador(){
+		return "pag/cadastroOrganizador";	
+	}
+	
+	@RequestMapping("/usuario")
+	public String cadastroUsuario(){
+		return "pag/cadastroUsuario";	
+	}
+	
+	@RequestMapping("/sobre")
+	public String sobre(){
+		return "pag/sobre";	
+	}
+	
+	@RequestMapping("/noticias")
+	public String noticias(Model model){
+		model.addAttribute("noticia", eventos)
+		return "pag/noticias";	
+	}
+	
+	@RequestMapping("/login")
+	public String login(){
+		return "login";
+	}
+}

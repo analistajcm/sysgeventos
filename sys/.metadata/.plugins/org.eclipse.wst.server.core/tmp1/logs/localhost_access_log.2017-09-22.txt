@@ -1,0 +1,16 @@
+127.0.0.1 - - [22/Sep/2017:17:28:09 -0300] "GET / HTTP/1.1" 404 994
+0:0:0:0:0:0:0:1 - - [22/Sep/2017:17:28:44 -0300] "GET /sysgeventos/app/rolebsb/home HTTP/1.1" 200 3290
+0:0:0:0:0:0:0:1 - - [22/Sep/2017:17:28:44 -0300] "GET /sysgeventos/static/css/normalize.css HTTP/1.1" 200 8164
+0:0:0:0:0:0:0:1 - - [22/Sep/2017:17:28:44 -0300] "GET /sysgeventos/static/css/rolebsb.css HTTP/1.1" 200 4570
+0:0:0:0:0:0:0:1 - - [22/Sep/2017:17:28:44 -0300] "GET /sysgeventos/static/bootstrap/css/bootstrap-theme.css HTTP/1.1" 200 26132
+0:0:0:0:0:0:0:1 - - [22/Sep/2017:17:28:44 -0300] "GET /sysgeventos/static/bootstrap/js/bootstrap.min.js HTTP/1.1" 200 36868
+0:0:0:0:0:0:0:1 - - [22/Sep/2017:17:28:44 -0300] "GET /sysgeventos/static/js/jquery-2.2.4.min.js HTTP/1.1" 200 85578
+0:0:0:0:0:0:0:1 - - [22/Sep/2017:17:28:44 -0300] "GET /sysgeventos/static/bootstrap/css/bootstrap.min.css HTTP/1.1" 200 121260
+0:0:0:0:0:0:0:1 - - [22/Sep/2017:17:28:44 -0300] "GET /sysgeventos/static/bootstrap/fonts/glyphicons-halflings-regular.woff2 HTTP/1.1" 200 18028
+0:0:0:0:0:0:0:1 - - [22/Sep/2017:17:29:04 -0300] "GET /sysgeventos/static/css/normalize.css HTTP/1.1" 200 8164
+0:0:0:0:0:0:0:1 - - [22/Sep/2017:17:29:04 -0300] "GET /sysgeventos/static/css/rolebsb.css HTTP/1.1" 200 4570
+0:0:0:0:0:0:0:1 - - [22/Sep/2017:17:29:04 -0300] "GET /sysgeventos/static/bootstrap/css/bootstrap-theme.css HTTP/1.1" 200 26132
+0:0:0:0:0:0:0:1 - - [22/Sep/2017:17:29:04 -0300] "GET /sysgeventos/static/bootstrap/css/bootstrap.min.css HTTP/1.1" 200 121260
+0:0:0:0:0:0:0:1 - - [22/Sep/2017:17:29:04 -0300] "GET /sysgeventos/static/bootstrap/css/bootstrap.min.css.map HTTP/1.1" 200 54416
+0:0:0:0:0:0:0:1 - - [22/Sep/2017:17:29:04 -0300] "GET /sysgeventos/static/bootstrap/css/bootstrap-theme.css.map HTTP/1.1" 200 47706
+0:0:0:0:0:0:0:1 - - [22/Sep/2017:17:29:07 -0300] "GET /sysgeventos/app/rolebsb/home HTTP/1.1" 200 3290

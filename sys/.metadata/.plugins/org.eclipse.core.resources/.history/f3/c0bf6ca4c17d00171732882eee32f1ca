@@ -1,0 +1,23 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<div class="container">
+	<table class=" table table-houover table-condesed table-striped table-bordered">
+		<thead>
+			<td>NOME</td>
+			<td>DATA DE INICIO</td>
+			<td>DATA DE FIM</td>
+			<td>QUANTIDADE DE VAGAS</td>
+			<td>TIPO</td>
+		</thead>
+			<c:forEach items="${evento}" var="evento">
+				<tr>
+					<td>${evento.nome}</td>
+					<td>${evento.dataInicio}</td>
+					<td>${evento.dataFim}</td>
+					<td>${evento.quantidadeVagas}</td>
+					<td>${evento.tipo}</td>
+				</tr>
+			</c:forEach>
+			
+	</table>
+</div>

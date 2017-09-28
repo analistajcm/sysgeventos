@@ -1,0 +1,20 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<c:import url="../basePag/cabecalhoOrganizador.jsp"></c:import>
+
+<div class="container">
+	<div>
+		<label class="control-label" name="foto"><h2>Eventos:</h2></label>
+		<select id="evento.id" name="evento"  class="form-control">
+			<c:forEach items="${evento}" var="evento">
+					<option value="${evento.id}">${evento.nome}</option>		
+			</c:forEach>
+		</select>
+	</div>
+	<div class="centro ">
+		<button type="button" class="btn" onclick="location.href='/sysgeventos/app/organizador/participantes/${evento.id}'">Obter lista de usuários</button>
+	</div>
+</div>	
+
+<c:import url="../basePag/rodape.jsp"></c:import>
+

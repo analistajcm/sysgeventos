@@ -1,0 +1,180 @@
+package br.com.rolebsb.modelo.entidades;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
+@Entity
+public class Eventos {
+
+	@Id
+	@GeneratedValue (strategy = GenerationType.AUTO)
+	private Long id;
+	
+	
+	@NotNull
+	@NotEmpty
+	private String nome;
+	
+	@Column(columnDefinition="DATE")
+	@NotNull
+	@NotEmpty
+	private Date dataInicio;
+	
+	
+	@Column(columnDefinition="DATE")
+	@NotNull
+	@NotEmpty
+	private Date dataFim;
+	private Integer horario;
+	@NotNull
+	@NotEmpty
+	private Integer quantidadeVagas;
+	@Lob
+	private String descricao;
+	private String nomePalestrante;
+	private Boolean tipo;
+	
+	//Ligações de classe
+	
+	@ManyToMany
+	private List<Organizacao> organizacao;
+	
+	@ManyToMany
+	private List<Usuario> usuarios;
+	
+	@OneToMany(mappedBy = "evento")
+	private Set<Comentario> comentarios;
+	
+	@OneToMany
+	private Set<Noticia> noticias;
+	
+	@OneToOne
+	private Conteudo conteudo;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public Date getDataInicio() {
+		return dataInicio;
+	}
+
+	public void setDataInicio(Date dataInicio) {
+		this.dataInicio = dataInicio;
+	}
+
+	public Date getDataFim() {
+		return dataFim;
+	}
+
+	public void setDataFim(Date dataFim) {
+		this.dataFim = dataFim;
+	}
+
+	public Integer getHorario() {
+		return horario;
+	}
+
+	public void setHorario(Integer horario) {
+		this.horario = horario;
+	}
+
+	public Integer getQuantidadeVagas() {
+		return quantidadeVagas;
+	}
+
+	public void setQuantidadeVagas(Integer quantidadeVagas) {
+		this.quantidadeVagas = quantidadeVagas;
+	}
+
+	public String getDescricao() {
+		return descricao;
+	}
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
+	public String getNomePalestrante() {
+		return nomePalestrante;
+	}
+
+	public void setNomePalestrante(String nomePalestrante) {
+		this.nomePalestrante = nomePalestrante;
+	}
+
+	public Boolean getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(Boolean tipo) {
+		this.tipo = tipo;
+	}
+
+	public List<Organizacao> getOrganizacao() {
+		return organizacao;
+	}
+
+	public void setOrganizacao(List<Organizacao> organizacao) {
+		this.organizacao = organizacao;
+	}
+
+	public List<Usuario> getUsuarios() {
+		return usuarios;
+	}
+
+	public void setUsuarios(List<Usuario> usuarios) {
+		this.usuarios = usuarios;
+	}
+
+	public Set<Comentario> getComentarios() {
+		return comentarios;
+	}
+
+	public void setComentarios(Set<Comentario> comentarios) {
+		this.comentarios = comentarios;
+	}
+
+	public Set<Noticia> getNoticias() {
+		return noticias;
+	}
+
+	public void setNoticias(Set<Noticia> noticias) {
+		this.noticias = noticias;
+	}
+
+	public Conteudo getConteudo() {
+		return conteudo;
+	}
+
+	public void setConteudo(Conteudo conteudo) {
+		this.conteudo = conteudo;
+	}
+	
+}

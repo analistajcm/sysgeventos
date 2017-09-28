@@ -1,0 +1,42 @@
+package br.com.rolebsb.servico;
+
+import java.awt.image.RenderedImage;
+
+import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServlet;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.DefaultPieDataset;
+
+public class JFreeChartServlet extends HttpServlet{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public JFreeChartServlet(){
+		
+	}
+	
+	
+	//Graficos
+	
+	public JFreeChart grafico(Integer masculino, Integer feminino){
+		
+		DefaultPieDataset dados = new DefaultPieDataset();
+		dados.setValue("Masculino", masculino);
+		dados.setValue("Feminino", feminino);
+		
+		JFreeChart chart = ChartFactory.createPieChart("Grafico de sexo", dados, true, true, true);
+		RenderedImage chartImage = chart.createBufferedImage(200, 200);
+		ImageIO.write(char, formatName, output)
+		
+		return chart;
+	}
+	
+	response.setContentType("image/png");
+	ServletOutputStream os = response.getOutputStream();
+}

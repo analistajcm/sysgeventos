@@ -1,0 +1,15 @@
+package br.com.rolebsb.servico;
+
+import javax.servlet.http.HttpServlet;
+
+public class JFreeChartServlet extends HttpServlet{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public JFreeChartServlet(){
+		
+	}
+}

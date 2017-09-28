@@ -1,0 +1,74 @@
+package br.com.rolebsb.configuracao;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import br.com.rolebsb.modelo.entidades.Usuario;
+import br.com.rolebsb.modelo.repositorios.UsuarioRepositorio;
+
+
+@Configuration
+@EnableWebSecurity
+public class ConfigSeguranca extends WebSecurityConfigurerAdapter {
+
+	@Autowired private UsuarioRepositorio usuarioRepositorio;
+	
+	
+	
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(new UserDetailsService() {		
+			@Override
+			public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {	
+				
+				Usuario usuario = usuarioRepositorio.findOneByEmail(email);		
+				if(usuario == null){
+					throw new UsernameNotFoundException("Usuário não encontrado!");
+				}
+				return usuario;
+			}
+		} ).passwordEncoder(enconder());}
+	
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.authorizeRequests().antMatchers("/app/organizador/**").hasRole("ORGANIZADOR")
+		.antMatchers("/app/usuario/**").hasRole("USUARIO")
+		.anyRequest().permitAll()
+		.and().formLogin()
+			.loginPage("/app/rolebsb/login")
+			.loginProcessingUrl("/autenticar")
+			.failureUrl("/app/rolebsb/login?semacesso=true")
+			.usernameParameter("email")
+			.passwordParameter("senha")
+		.and().logout()
+			.logoutUrl("/sair")
+			.logoutSuccessUrl("/app/rolebsb/login?saiu=true");
+		
+	}
+	
+	
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+		// TODO Auto-generated method stub
+		super.configure(web);
+	}
+	
+	@Bean
+	public BCryptPasswordEncoder enconder(){
+		return new BCryptPasswordEncoder();
+	}
+	
+	
+}

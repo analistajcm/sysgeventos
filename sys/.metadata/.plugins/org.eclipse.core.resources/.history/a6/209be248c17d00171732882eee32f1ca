@@ -1,0 +1,24 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<c:import url="../basePag/cabecalhoOrganizador.jsp"></c:import>
+
+<c:if test="${not empty mensagemErro}">
+	<div class="conteiner">
+		<div class="alert alert-danger">${mensagemErro}</div>
+	</div>
+</c:if>
+
+<c:if test="${not empty mensagemInfo}">
+	<div class="conteiner">
+		<div class="alert alert-info">${mensagemInfo}</div>
+	</div>
+</c:if>
+
+<div class="menu-organizador">
+	<div>
+		<botton type="button" class="btn" data-toggle="modal" data-target="#formEvento" >Adicionar</botton>
+	</div>	
+</div>
+<c:import url="../organizacao/listaDeEventos.jsp"></c:import>
+<jsp:include page="../organizacao/formEvento.jsp"></jsp:include>
+<c:import url="../basePag/rodape.jsp"></c:import>

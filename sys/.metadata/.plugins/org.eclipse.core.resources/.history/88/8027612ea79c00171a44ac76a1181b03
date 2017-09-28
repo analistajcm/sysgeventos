@@ -1,0 +1,61 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<c:import url="../basePag/cabecalhoOrganizador.jsp"></c:import>
+
+
+<section class="container">
+
+		<table class=" table table-houover table-condesed table-striped table-bordered">
+			<thead>
+				<tr>
+					<td>Nome</td>
+					<td>Sexo</td>
+					<td>Estado</td>
+					<td>CPF</td>
+				</tr>
+			</thead>
+			<tbody>
+					<c:forEach items="${usuario}" var="usuario">
+						<tr>
+							<td>${usuario.nome}</td>
+							<td>${usuario.sexo}</td>
+							<td>${usuario.estado}</td>
+							<td>${usuario.cpf}</td>
+							<td><form action="presenca" method="post"><button type="submit" >
+							Presente</button>
+							<input type="hidden" id="idUsuario" name="idUsuario" value="${usuario.id}">
+							</form></td>
+							<td><form action="ausente" method="post"><button type="submit">Ausente</button>
+							<input type="hidden" id="idUsuario" name="idUsuario" value="${usuario.id}">
+							</form></td>
+						</tr>	
+						
+						<input type="hidden" id="_csrf" name="_csrf" value="${_csrf.token}">			
+					</c:forEach>	
+						
+			</tbody>
+			<tfoot>	
+				<tr>	
+					<c:set value="${evento}" var="evento"/>	
+					<td colspan="4">
+						<input type="hidden" id="idEvento" name="idEvento" value="${evento.id}">
+						<button type="submit" class="btn">
+							Enviar
+					    </button> 
+					    <button type="button" class="btn" onclick="location.href='participantes/listaPresenca${evento.id}'">
+							Gerar lista de presença
+					    </button>
+					    <button type="button" class="btn" onclick="location.href='participantes/crachas${evento.id}'">
+							Gerar crachás
+					    </button>
+					      <button type="button" class="btn" onclick="location.href='participantes/certificado'">
+							Gerar certificado para Palestrante
+					    </button>  			
+					</td>	
+				</tr>	
+			</tfoot>
+		</table>
+</section>
+	
+
+<c:import url="../basePag/rodape.jsp"></c:import>

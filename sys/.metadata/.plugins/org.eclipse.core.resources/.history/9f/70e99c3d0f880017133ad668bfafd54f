@@ -1,0 +1,63 @@
+package br.com.rolebsb.configuracao;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import br.com.rolebsb.modelo.repositorios.UsuarioRepositorio;
+
+
+@Configuration
+@EnableWebSecurity
+public class ConfigSeguranca extends WebSecurityConfigurerAdapter {
+	/*
+	@Autowired private UsuarioRepositorio usuarioRepositorio;
+	
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(new UserDetailsService() {
+			
+			@Override
+			public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+				return usuarioRepositorio.findOneByEmail(email);
+			}
+		}).passwordEncoder(enconder());
+	}
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.authorizeRequests().antMatchers("/app/organizador/**").hasRole(null)
+		.anyRequest().permitAll()
+		.and().formLogin()
+			.loginPage("/login.jsp")
+			.loginProcessingUrl("/autenticar")
+			.defaultSuccessUrl("/organizador/home")
+			.failureUrl("/login.jsp?semacesso=true")
+			.usernameParameter("usuario")
+			.passwordParameter("senha")
+		.and().logout()
+			.logoutUrl("/sair")
+			.logoutSuccessUrl("/login.jsp?saiu=true");
+		
+	}
+	
+	
+	@Bean
+	public BCryptPasswordEncoder enconder(){
+		return new BCryptPasswordEncoder();
+	}
+	
+	public static void main(String[] args) {
+		BCryptPasswordEncoder enconder = new BCryptPasswordEncoder();
+		System.out.println(enconder.encode("admin"));
+	}*/
+}

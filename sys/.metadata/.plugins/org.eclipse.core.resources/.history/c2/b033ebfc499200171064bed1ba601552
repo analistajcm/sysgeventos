@@ -1,0 +1,236 @@
+ package br.com.rolebsb.controladores;
+
+
+import java.util.ArrayList;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import br.com.rolebsb.configuracao.ConfigEmail;
+import br.com.rolebsb.modelo.entidades.AdmUsuarios;
+import br.com.rolebsb.modelo.entidades.Conteudo;
+import br.com.rolebsb.modelo.entidades.Eventos;
+import br.com.rolebsb.modelo.entidades.Noticia;
+import br.com.rolebsb.modelo.entidades.Usuario;
+import br.com.rolebsb.modelo.repositorios.AdmUsuariosRepositorio;
+import br.com.rolebsb.modelo.repositorios.ConteudoRepositorio;
+import br.com.rolebsb.modelo.repositorios.EventosRepositorio;
+import br.com.rolebsb.modelo.repositorios.NoticiasRepositorio;
+import br.com.rolebsb.modelo.repositorios.UsuarioRepositorio;
+
+@Controller
+@RequestMapping("/organizador")
+public class ControlOrganizador {
+
+	@Autowired private UsuarioRepositorio usuarioRepositorio;
+	@Autowired private EventosRepositorio eventosRepositorio;
+	@Autowired private NoticiasRepositorio noticiaRepositorio;
+	@Autowired private AdmUsuariosRepositorio admUsuariosRepositorio;
+	@Autowired private ConteudoRepositorio conteudoRepositorio;
+
+	//====== EVENTOS =======
+	
+	@RequestMapping(value="/eventos")
+	public String eventos(HttpServletRequest request ,Model model) {
+		Iterable<Eventos> eventos = listarEventosParticipante(request.getRemoteUser());
+		model.addAttribute("evento", eventos);
+		
+		return "organizacao/eventos";
+	}
+	
+
+	@RequestMapping(value="/eventos/editar{idEvento}", method=RequestMethod.GET)
+	public String alterarEvento(@PathVariable Long idEvento, Model model) {
+		Eventos evento = eventosRepositorio.findOne(idEvento);
+		model.addAttribute("evento", evento);
+		
+		return "organizacao/alterarEvento";
+	}
+	
+	@RequestMapping(value="/eventos/alterar", method=RequestMethod.POST)
+	public String salvarAlteracaoEvento(HttpServletRequest request, AdmUsuarios admusuario, @ModelAttribute Eventos evento) {	
+
+		eventosRepositorio.save(evento);
+		
+		return "redirect:../eventos";
+	}
+	
+	
+	@RequestMapping(value="/eventos/deletar{idEvento}")
+	public String removeEvento(@PathVariable Long idEvento, Eventos evento) {
+		
+		Iterable<AdmUsuarios> admUsuarios = admUsuariosRepositorio.findAll();
+		for(AdmUsuarios admUsuario : admUsuarios){
+			if(admUsuario.getEvento().getId() == evento.getId(idEvento)){
+				admUsuariosRepositorio.delete(admUsuario);
+			}
+		}
+		
+		eventosRepositorio.delete(idEvento);
+		
+		return "redirect:../eventos";
+		
+	}
+	
+	@RequestMapping(value = "evento", method=RequestMethod.POST)
+	public String salvar(HttpServletRequest request, AdmUsuarios admusuario, @ModelAttribute Eventos evento){
+		Usuario usuario = usuarioRepositorio.findOneByEmail(request.getRemoteUser());
+		eventosRepositorio.save(evento);
+		admusuario.setEvento(evento);
+		admusuario.setUsario(usuario);
+		admusuario.setOrganizador(true);
+		admUsuariosRepositorio.save(admusuario);
+		
+		return "redirect:../organizador/eventos";
+	}
+	
+	
+	//========= MENSAGEM ===========
+	
+	@RequestMapping("/mensagem")
+	public String mensagem(HttpServletRequest request, Model model) {
+		Iterable<Eventos> eventos = listarEventosParticipante(request.getRemoteUser());
+		model.addAttribute("evento", eventos);
+		
+		return "organizacao/mensagem";
+	}
+	
+	@RequestMapping(value="/mensagem", method=RequestMethod.POST)
+	public String enviar(HttpServletRequest request) {
+		Iterable<AdmUsuarios> admUsuarios = admUsuariosRepositorio.findAllByEvento(eventosRepositorio.findOne(Long.parseLong(request.getParameter("evento"))));
+		ArrayList<String> email = new ArrayList<String>();
+		
+		for(AdmUsuarios admUsuario : admUsuarios){
+			email.add(admUsuario.getUsario().getEmail());				
+		}
+		
+		ConfigEmail mensagem = new ConfigEmail();
+		mensagem.sendEmail(email, request.getParameter("subject"), request.getParameter("mensagem"));
+		
+		return "redirect:/mensagem";
+	}
+	
+	//========== NOTICIAS =============
+	
+	
+	@RequestMapping("/noticias")
+	public String noticias(HttpServletRequest request, Model model) {
+		Iterable<Eventos> eventos = listarEventosParticipante(request.getRemoteUser());;
+		model.addAttribute("evento", eventos);
+		//=====================================================
+		Iterable<Noticia> noticias = noticiaRepositorio.findAll();
+		Iterable<Eventos> sEventos = eventosRepositorio.findAll();
+		ArrayList<Noticia> sNoticia = new ArrayList<Noticia>(); 
+			for(Noticia noticia : noticias){
+				for(Eventos sEvento : sEventos){
+					if(sEvento == noticia.getEvento()){
+						sNoticia.add(noticia);
+					}			
+				}	
+			}
+		Iterable<Noticia> noticiaV = sNoticia;	
+		model.addAttribute("noticia", noticiaV);
+		
+		return "organizacao/noticias";
+	}
+	
+	@RequestMapping(value = "noticia", method=RequestMethod.POST)
+	public String postar(@ModelAttribute Noticia noticia){
+		/*
+		Iterable<Eventos> eventos = eventosRepositorio.findAll();
+		Set<Noticia> noticias = new HashSet<Noticia>();
+			for(Eventos evento: eventos){
+				if(evento.getId() == noticia.getEvento().getId()){
+					noticias.add(noticia);
+					evento.setNoticias(noticias);
+					eventosRepositorio.save(evento);
+				}
+			}
+		
+		*/
+		noticiaRepositorio.save(noticia);
+		
+		return "redirect:../organizador/noticias";
+	}
+	
+	@RequestMapping(value="noticias/deletar{idNoticia}")
+	public String deletar(@PathVariable Long idNoticia){
+		
+		noticiaRepositorio.delete(idNoticia);
+		
+		return "redirect:../noticias";
+	}
+	
+	
+	//========= PARTICIPANTES ==============
+	@RequestMapping(value="/participantes")
+	public String participantes(Model model, HttpServletRequest request) {
+		Iterable<Eventos> eventos = listarEventosParticipante(request.getRemoteUser());
+		model.addAttribute("evento", eventos);	
+		
+		return "organizacao/participantes";
+	}
+	
+	@RequestMapping(value="/participantes", method=RequestMethod.POST)
+	public String  listarParticipantes(HttpServletRequest request, Model model){
+		Eventos evento = eventosRepositorio.findOne(Long.parseLong(request.getParameter("evento.id")));
+		Iterable<AdmUsuarios> admUsuarios = admUsuariosRepositorio.findAllByEvento(evento);
+		ArrayList<Usuario> selectUsuario =  new ArrayList<Usuario>();
+		ArrayList<Usuario> usuario =  new ArrayList<Usuario>();
+		
+		
+		for(AdmUsuarios admUsuario : admUsuarios){
+			selectUsuario.add(admUsuario.getUsario());
+		}
+		
+		
+		for(Usuario user: selectUsuario){
+			if(user.getOrganizador() == false){
+				usuario.add(user);
+			}
+		}
+		Iterable<Usuario> usuarios = usuario;
+		
+		model.addAttribute("usuario", usuarios);
+			
+		return "organizacao/listaDeParticipantes";
+	}
+	
+	@RequestMapping(value="presenca", method=RequestMethod.POST)
+	public String salvarPresenca(@ModelAttribute AdmUsuarios admUsuarios) {
+		
+		admUsuariosRepositorio.save(admUsuarios);	
+		
+		return "organizacao/participantes";
+	}
+	
+	
+	//========= RELATORIOS ==============
+	@RequestMapping("/relatorios")
+	public String relatorios() {
+		return "organizacao/relatorios";
+	}
+ 
+	//================ SERVIÇOS =========================
+	public ArrayList<Eventos> listarEventosParticipante(String string){
+		Usuario usuario = usuarioRepositorio.findOneByEmail(string);
+		Iterable<AdmUsuarios> admUsuarios = admUsuariosRepositorio.findAll();
+		ArrayList<Eventos> evento = new ArrayList<Eventos>();
+		for(AdmUsuarios admUsuario : admUsuarios){
+			if (usuario.getId() == admUsuario.getUsario().getId()){
+				evento.add(admUsuario.getEvento());
+			}
+			
+		}
+		return evento;
+		
+	}
+	
+}
